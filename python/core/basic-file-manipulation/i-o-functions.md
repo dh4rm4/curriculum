@@ -67,6 +67,8 @@ The **input** of the user will be returned as a `string` without any additional 
 - `casting` function (which would **cast** the input into the needed *data type*)
 - `eval`[3] function (which would interpret `string`s as Python *code* and evaluate it)
 
+Note: **eval** will interpret the given string as python code. To avoid malicious uses, you should only use eval in a trusted environment. (See bottom of this page for an example)
+
 Consider we want to know the user's favorite colors and save them in a list, for this `eval()` function can be used:
 ```python
 colors = eval(input('Favorite colors: '))
@@ -89,6 +91,39 @@ The `stdout` will look like this:
 ```
 How old are you? 21
 21 <class `int`>
+```
+
+## Eval, a security hole:
+
+The following code uses **eval** to ask which operation need to be done.
+
+```
+from operation import add, multiply
+
+x = 21
+y = 2
+operation_name = input("add or multiply ?\n")
+
+print(eval(operation_name(x, y))
+```
+### Execution
+```
+>>> python calculator.py
+add or multiply ? <-- 'input' message
+multiply          <-- user choice
+42                <-- output
+```
+
+Everything looks fine until a malicious user wants to abuse the **eval** mechanism.
+
+By giving a full code snippet as an input, a malicious user can exploit your software.
+
+Exemple:
+```
+>>> python calculator.py
+add or multiply ?                                   <-- 'input' message
+getenv('PASSWORD', 'FAILED)  <-- user choice
+password123                                         <-- output
 ```
 
 ---
